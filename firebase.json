@@ -1,0 +1,37 @@
+{
+  "emulators": {
+    "auth": { "host": "127.0.0.1", "port": 9099 },
+    "firestore": { "host": "127.0.0.1", "port": 8081 },
+    "database": { "host": "127.0.0.1", "port": 9000 },
+    "ui": { "host": "127.0.0.1", "enabled": true },
+    "singleProjectMode": true
+  },
+  "firestore": {
+    "database": "(default)",
+    "location": "nam5",
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "database": { "rules": "database.rules.json" },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "subtrack-a020a",
+          "appId": "1:46329965836:android:fe30ce62d61adb3553ed29",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "subtrack-a020a",
+          "configurations": {
+            "android": "1:46329965836:android:fe30ce62d61adb3553ed29",
+            "ios": "1:46329965836:ios:8e159bb6819b953d53ed29",
+            "web": "1:46329965836:web:2056368e07d06f1d53ed29"
+          }
+        }
+      }
+    }
+  }
+}
