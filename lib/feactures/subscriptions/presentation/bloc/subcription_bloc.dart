@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:substrack/core/utils/global_error_traslator.dart';
 import 'package:substrack/feactures/subscriptions/data/models/subscription_model.dart';
 import 'package:substrack/feactures/subscriptions/domain/repositories/isubcription_repository.dart';
 
@@ -13,17 +14,16 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   SubscriptionBloc({required ISubscriptionRepository subRepository})
     : _subsRepository = subRepository,
       super(SubscriptionInitial()) {
-    on<LoadSubscriptions>(_loadSubscriptions);
-    on<AddSubscription>(_onAddSubscription);
+    on<LoadedSubscriptions>(_onLoadedSubscriptions);
+    on<AddedSubscription>(_onAddedSubscription);
     on<SearchSubscriptions>(_searchSubscription);
-    on<SubcriptionRefreshed>(_refreshAll);
-    on<SubscriptionRemoveEvent>(_removeSubcription);
-    on<SubscriptionByIdEvent>(_subscriptionByid);
-    on<EditSubscription>(_onEditSubscription);
+    on<DeletedSubscription>(_onDeletedSubscription);
+    on<FetchedByIdSubscription>(_onFetchedByIdSubscription);
+    on<UpdatedSubscription>(_onUpdatedSubscription);
   }
 
-  void _onAddSubscription(
-    AddSubscription event,
+  void _onAddedSubscription(
+    AddedSubscription event,
     Emitter<SubscriptionState> emit,
   ) async {
     emit(SubscriptionLoadingState());
@@ -37,13 +37,64 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
 
       event.completer?.complete();
     } catch (e) {
-      emit(SubscriptionErrorState(message: e.toString()));
+      final friendlyMessage = GlobalErrorTranslator.translate(e);
+      emit(SubscriptionErrorState(message: friendlyMessage));
       event.completer?.completeError(e);
     }
   }
 
-  void _onEditSubscription(
-    EditSubscription event,
+  void _onDeletedSubscription(
+    DeletedSubscription event,
+    Emitter<SubscriptionState> emit,
+  ) async {
+    emit(SubscriptionLoadingState());
+    final id = event.id;
+
+    try {
+      await _subsRepository.removeSubscription(id: id);
+
+      final subscriptions = await _subsRepository.fetchSubscriptions();
+      emit(SubscriptionLoadedState(subscriptions: subscriptions));
+    } catch (e) {
+      final friendlyMessage = GlobalErrorTranslator.translate(e);
+      emit(SubscriptionErrorState(message: friendlyMessage));
+    }
+  }
+
+  void _onFetchedByIdSubscription(
+    FetchedByIdSubscription event,
+    Emitter<SubscriptionState> emit,
+  ) async {
+    emit(SubscriptionLoadingState());
+
+    final id = event.id;
+    if (id == null) return;
+    try {
+      final subscription = await _subsRepository.fetchSubscription(id: id);
+
+      emit(SubscriptionByIdState(subscription: subscription));
+    } catch (e) {
+      final friendlyMessage = GlobalErrorTranslator.translate(e);
+      emit(SubscriptionErrorState(message: friendlyMessage));
+    }
+  }
+
+  void _onLoadedSubscriptions(
+    LoadedSubscriptions event,
+    Emitter<SubscriptionState> emit,
+  ) async {
+    emit(SubscriptionLoadingState());
+    try {
+      final subscriptions = await _subsRepository.fetchSubscriptions();
+      emit(SubscriptionLoadedState(subscriptions: subscriptions));
+    } catch (e) {
+      final friendlyMessage = GlobalErrorTranslator.translate(e);
+      emit(SubscriptionErrorState(message: friendlyMessage));
+    }
+  }
+
+  void _onUpdatedSubscription(
+    UpdatedSubscription event,
     Emitter<SubscriptionState> emit,
   ) async {
     emit(SubscriptionLoadingState());
@@ -64,49 +115,6 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     }
   }
 
-  void _loadSubscriptions(
-    LoadSubscriptions event,
-    Emitter<SubscriptionState> emit,
-  ) async {
-    emit(SubscriptionLoadingState());
-    try {
-      final subscriptions = await _subsRepository.fetchSubscriptions();
-      emit(SubscriptionLoadedState(subscriptions: subscriptions));
-    } catch (e) {
-      emit(SubscriptionErrorState(message: e.toString()));
-    }
-  }
-
-  void _refreshAll(
-    SubscriptionEvent event,
-    Emitter<SubscriptionState> emit,
-  ) async {
-    emit(SubscriptionLoadingState());
-    try {
-      final subscriptions = await _subsRepository.fetchSubscriptions();
-      emit(SubscriptionLoadedState(subscriptions: subscriptions));
-    } catch (e) {
-      emit(SubscriptionErrorState(message: e.toString()));
-    }
-  }
-
-  void _removeSubcription(
-    SubscriptionRemoveEvent event,
-    Emitter<SubscriptionState> emit,
-  ) async {
-    emit(SubscriptionLoadingState());
-    final id = event.id;
-
-    try {
-      await _subsRepository.removeSubscription(id: id);
-
-      final subscriptions = await _subsRepository.fetchSubscriptions();
-      emit(SubscriptionLoadedState(subscriptions: subscriptions));
-    } catch (e) {
-      emit(SubscriptionErrorState(message: e.toString()));
-    }
-  }
-
   void _searchSubscription(
     SearchSubscriptions event,
     Emitter<SubscriptionState> emit,
@@ -118,24 +126,8 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
         return;
       }
     } catch (e) {
-      emit(SubscriptionErrorState(message: e.toString()));
-    }
-  }
-
-  void _subscriptionByid(
-    SubscriptionByIdEvent event,
-    Emitter<SubscriptionState> emit,
-  ) async {
-    emit(SubscriptionLoadingState());
-
-    final id = event.id;
-    if (id == null) return;
-    try {
-      final subscription = await _subsRepository.fetchSubscription(id: id);
-
-      emit(SubscriptionByIdState(subscription: subscription));
-    } catch (e) {
-      emit(SubscriptionErrorState(message: e.toString()));
+      final friendlyMessage = GlobalErrorTranslator.translate(e);
+      emit(SubscriptionErrorState(message: friendlyMessage));
     }
   }
 }
