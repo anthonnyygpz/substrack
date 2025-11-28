@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
     if (!formKey.currentState!.validate()) return;
 
     context.read<AuthBloc>().add(
-      SignInEvent(
+      SignedIn(
         credentials: SignInEntity(
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
@@ -45,10 +45,10 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthLoadingState) {
+        if (state is AuthLoading) {
           SnackBarCustom.loading(context, content: "Iniciando sesión...");
         }
-        if (state is AuthErrorState) {
+        if (state is AuthFailure) {
           SnackBarCustom.error(
             context,
             content: state.message ?? "Algo Salio mal al iniciar sesión",
@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
         }
       },
       builder: (context, state) {
-        bool isLoading = state is AuthLoadingState;
+        bool isLoading = state is AuthLoading;
 
         return Scaffold(
           body: SafeArea(
@@ -114,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             ButtomCustom(
                               onPressed: onLogin,
-                              loading: isLoading,
+                              isLoading: isLoading,
                               text: 'Iniciar Sesión',
                             ),
                           ],

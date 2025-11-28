@@ -1,7 +1,9 @@
+import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:substrack/core/utils/global_error_traslator.dart';
 import 'package:substrack/feactures/auth/domain/entities/sign_in_entity.dart';
 import 'package:substrack/feactures/auth/domain/entities/sign_up_entity.dart';
-import 'package:bloc/bloc.dart';
+import 'package:substrack/feactures/auth/domain/entities/user_entity.dart';
 import 'package:substrack/feactures/auth/domain/repositories/iauth_repository.dart';
 
 part 'auth_event.dart';
@@ -12,13 +14,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   AuthBloc({required IAuthRepository authRepository})
     : _authRepository = authRepository,
-      super(AuthInitialState()) {
-    on<AppStarted>(_appStaterd);
-    on<SignUpEvent>(_signUp);
-    on<SignInEvent>(_signIn);
-    on<SignOutEvent>(_signOut);
+      super(AuthInitial()) {
+    on<AppStarted>(_onAppStaterd);
+    on<SignedUp>(_onSignUp);
+    on<SignedIn>(_onSignIn);
+    on<SignedOut>(_onSignOut);
+    on<UserUpdated>(_onUserUpdated);
   }
-  Future<void> _appStaterd(AppStarted event, Emitter<AuthState> emit) async {
+  Future<void> _onAppStaterd(AppStarted event, Emitter<AuthState> emit) async {
     await emit.forEach<User?>(
       _authRepository.userChanges,
       onData: (user) {
@@ -29,45 +32,63 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
       },
       onError: (error, stackTrace) {
-        return AuthErrorState(message: error.toString());
+        final friendlyMessage = GlobalErrorTranslator.translate(error);
+        return AuthFailure(message: friendlyMessage);
       },
     );
   }
 
-  void _signUp(SignUpEvent event, Emitter<AuthState> emit) async {
-    emit(AuthLoadingState());
-
-    final newUser = event.newUser;
-
-    try {
-      await _authRepository.signUp(newUser: newUser);
-      emit(AuthUnauthenticated());
-    } catch (e) {
-      emit(AuthErrorState(message: e.toString()));
-    }
-  }
-
-  void _signIn(SignInEvent event, Emitter<AuthState> emit) async {
-    emit(AuthLoadingState());
+  void _onSignIn(SignedIn event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
 
     final credentials = event.credentials;
 
     try {
       await _authRepository.signIn(credentials: credentials);
-      emit(AuthAuthenticated(user: null));
     } catch (e) {
-      emit(AuthErrorState(message: e.toString()));
+      final friendlyMessage = GlobalErrorTranslator.translate(e);
+      emit(AuthFailure(message: friendlyMessage));
     }
   }
 
-  Future<void> _signOut(SignOutEvent event, Emitter<AuthState> emit) async {
-    emit(AuthLoadingState());
+  Future<void> _onSignOut(SignedOut event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
     try {
       await _authRepository.signOut();
     } catch (e) {
-      emit(AuthUnauthenticated());
-      await Future.delayed(Duration(seconds: 3));
-      emit(AuthErrorState(message: e.toString()));
+      final friendlyMessage = GlobalErrorTranslator.translate(e);
+      emit(AuthFailure(message: friendlyMessage));
+    }
+  }
+
+  void _onSignUp(SignedUp event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+
+    final newUser = event.newUser;
+
+    try {
+      final updatedUser = await _authRepository.signUp(newUser: newUser);
+      if (updatedUser != null) {
+        emit(AuthAuthenticated(user: updatedUser));
+      }
+    } catch (e) {
+      final friendlyMessage = GlobalErrorTranslator.translate(e);
+      emit(AuthFailure(message: friendlyMessage));
+    }
+  }
+
+  Future<void> _onUserUpdated(
+    UserUpdated event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+    final user = event.user;
+    try {
+      final data = await _authRepository.updateUser(user: user);
+      emit(AuthAuthenticated(user: data));
+    } catch (e) {
+      final friendlyMessage = GlobalErrorTranslator.translate(e);
+      emit(AuthFailure(message: friendlyMessage));
     }
   }
 }

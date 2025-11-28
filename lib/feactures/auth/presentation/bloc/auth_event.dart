@@ -2,20 +2,24 @@ part of 'auth_bloc.dart';
 
 abstract class AuthEvent {}
 
-class SignUpEvent extends AuthEvent {
+class SignedUp extends AuthEvent {
   final SignUpEntity newUser;
 
-  SignUpEvent({required this.newUser});
+  SignedUp({required this.newUser});
 }
 
-class SignInEvent extends AuthEvent {
+class SignedIn extends AuthEvent {
   final SignInEntity credentials;
 
-  SignInEvent({required this.credentials});
+  SignedIn({required this.credentials});
 }
 
 class AppStarted extends AuthEvent {}
 
-class SignOutEvent extends AuthEvent {}
+class SignedOut extends AuthEvent {}
 
-class FetchUserEvent extends AuthEvent {}
+class UserUpdated extends AuthEvent {
+  final UpdateUserEntity user;
+
+  UserUpdated({required this.user});
+}
