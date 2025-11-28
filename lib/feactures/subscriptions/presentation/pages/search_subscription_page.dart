@@ -19,7 +19,7 @@ class _SearchSubscriptionPageState extends State<SearchSubscriptionPage> {
   @override
   void initState() {
     subcriptionBloc = BlocProvider.of<SubscriptionBloc>(context, listen: false);
-    subcriptionBloc.add(LoadSubscriptions());
+    subcriptionBloc.add(LoadedSubscriptions());
     super.initState();
   }
 

@@ -355,7 +355,7 @@ class _AddOrEditPageState extends State<AddOrEditPage> {
                           ButtomCustom(
                             text: 'Añadir',
                             onPressed: onSubmit,
-                            loading: isLoading,
+                            isLoading: isLoading,
                           ),
 
                           SizedBox(height: 10.0),
@@ -545,7 +545,7 @@ class _AddOrEditPageState extends State<AddOrEditPage> {
         }
 
         context.read<SubscriptionBloc>().add(
-          EditSubscription(
+          UpdatedSubscription(
             completer: completer,
             editSubscription: widget.subscriptionToEdit!.copyWith(
               nextPaymentDate: nextPaymentDate,
@@ -578,7 +578,7 @@ class _AddOrEditPageState extends State<AddOrEditPage> {
         }
       } else {
         context.read<SubscriptionBloc>().add(
-          AddSubscription(
+          AddedSubscription(
             completer: completer,
             subcriptions: SubscriptionModel(
               nextPaymentDate: nextPaymentDate,

@@ -2,17 +2,17 @@ part of 'subcription_bloc.dart';
 
 abstract class SubscriptionEvent {}
 
-class AddSubscription extends SubscriptionEvent {
+class AddedSubscription extends SubscriptionEvent {
   final SubscriptionModel? subcriptions;
   final Completer? completer;
 
-  AddSubscription({this.subcriptions, this.completer});
+  AddedSubscription({this.subcriptions, this.completer});
 }
 
-class LoadSubscriptions extends SubscriptionEvent {
+class LoadedSubscriptions extends SubscriptionEvent {
   final List<SubscriptionModel?>? subcriptions;
 
-  LoadSubscriptions({this.subcriptions});
+  LoadedSubscriptions({this.subcriptions});
 }
 
 class SearchSubscriptions extends SubscriptionEvent {
@@ -21,23 +21,21 @@ class SearchSubscriptions extends SubscriptionEvent {
   SearchSubscriptions({required this.querySearch});
 }
 
-class SubcriptionRefreshed extends SubscriptionEvent {}
-
-class SubscriptionRemoveEvent extends SubscriptionEvent {
+class DeletedSubscription extends SubscriptionEvent {
   final String id;
 
-  SubscriptionRemoveEvent({required this.id});
+  DeletedSubscription({required this.id});
 }
 
-class SubscriptionByIdEvent extends SubscriptionEvent {
+class FetchedByIdSubscription extends SubscriptionEvent {
   final String? id;
 
-  SubscriptionByIdEvent({required this.id});
+  FetchedByIdSubscription({required this.id});
 }
 
-class EditSubscription extends SubscriptionEvent {
+class UpdatedSubscription extends SubscriptionEvent {
   final SubscriptionModel? editSubscription;
   final Completer? completer;
 
-  EditSubscription({required this.editSubscription, this.completer});
+  UpdatedSubscription({required this.editSubscription, this.completer});
 }

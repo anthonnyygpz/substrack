@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:substrack/core/state_handlers/subscription_state_manager.dart';
+import 'package:substrack/feactures/auth/presentation/bloc/auth_bloc.dart';
 import 'package:substrack/feactures/subscriptions/data/models/subscription_model.dart';
 import 'package:substrack/feactures/subscriptions/presentation/bloc/subcription_bloc.dart';
 import 'package:substrack/feactures/subscriptions/presentation/pages/search_subscription_page.dart';
@@ -23,12 +24,13 @@ class _SubcriptionListPageState extends State<SubcriptionListPage> {
   void initState() {
     subcriptionBloc = BlocProvider.of<SubscriptionBloc>(context, listen: false);
 
-    subcriptionBloc.add(LoadSubscriptions());
+    subcriptionBloc.add(LoadedSubscriptions());
     super.initState();
   }
 
   Future<void> handleRefresh() async {
-    context.read<SubscriptionBloc>().add(LoadSubscriptions());
+    context.read<SubscriptionBloc>().add(LoadedSubscriptions());
+    context.read<AuthBloc>().add(AppStarted());
   }
 
   @override

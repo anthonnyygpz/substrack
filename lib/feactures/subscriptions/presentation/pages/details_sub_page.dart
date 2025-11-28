@@ -26,7 +26,7 @@ class _DetailsSubPageState extends State<DetailsSubPage> {
     if (widget.sub.id == null) return;
 
     context.read<SubscriptionBloc>().add(
-      SubscriptionRemoveEvent(id: widget.sub.id!),
+      DeletedSubscription(id: widget.sub.id!),
     );
 
     SnackBarCustom.remove(context);
