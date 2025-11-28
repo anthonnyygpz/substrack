@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class ButtomCustom extends StatelessWidget {
   final String text;
   final void Function()? onPressed;
-  final bool? loading;
-  final bool? disabled;
+  final bool isLoading;
+  final bool enabled;
 
   final double? fontSize;
 
@@ -12,9 +12,9 @@ class ButtomCustom extends StatelessWidget {
     super.key,
     required this.text,
     required this.onPressed,
-    this.loading = false,
+    this.isLoading = false,
     this.fontSize = 14,
-    this.disabled = false,
+    this.enabled = true,
   });
 
   @override
@@ -31,8 +31,22 @@ class ButtomCustom extends StatelessWidget {
             borderRadius: BorderRadius.circular(10.0),
           ),
         ),
-        onPressed: loading! || disabled! ? null : onPressed,
-        child: Text(text, style: TextStyle(fontSize: fontSize)),
+        onPressed: (enabled && !isLoading) ? onPressed : null,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 10,
+          children: [
+            if (isLoading)
+              Transform.scale(
+                scale: 0.5,
+                child: CircularProgressIndicator.adaptive(),
+              ),
+            Text(
+              !isLoading ? text : 'Cargando...',
+              style: TextStyle(fontSize: fontSize),
+            ),
+          ],
+        ),
       ),
     );
   }
