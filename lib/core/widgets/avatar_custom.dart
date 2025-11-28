@@ -39,7 +39,7 @@ class AvatarCustom extends StatelessWidget {
                     width: width,
                     height: height,
                     child: Icon(
-                      Icons.cancel_outlined,
+                      Icons.person_off,
                       color: colorscheme.onPrimary,
                       size: iconSize,
                     ),
