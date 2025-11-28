@@ -71,7 +71,7 @@ class AuthRepository extends IAuthRepository {
   }
 
   @override
-  Future<User?> updateUser({required EditUserEntity user}) async {
+  Future<User?> updateUser({required UpdateUserEntity user}) async {
     try {
       final password = user.password;
       final photoUrl = user.photoUrl;
