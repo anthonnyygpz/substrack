@@ -52,7 +52,12 @@ class _UserProfileCardState extends State<UserProfileCard> {
               child: ClipRect(
                 child: ClipOval(
                   child: widget.user?.photoURL != null
-                      ? Image.network(widget.user!.photoURL!, fit: BoxFit.cover)
+                      ? Image.network(
+                          widget.user!.photoURL!,
+                          fit: BoxFit.cover,
+                          width: 50,
+                          height: 50,
+                        )
                       : Container(
                           color: colorscheme.primary,
                           width: 50,
@@ -75,7 +80,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
                     height: 16,
                     loading: widget.isLoading,
                     child: Text(
-                      "Bienvenido! ${widget.user?.displayName ?? 'Usuario'}",
+                      "Bienvenido, ${widget.user?.displayName ?? 'Usuario'}",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
