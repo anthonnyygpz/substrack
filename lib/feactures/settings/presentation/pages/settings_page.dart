@@ -17,7 +17,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   void onLogout() async {
-    context.read<AuthBloc>().add(SignOutEvent());
+    context.read<AuthBloc>().add(SignedOut());
   }
 
   List<IconTextEntity> get _settingsOptions => [
@@ -57,7 +57,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthLoadingState) {
+        if (state is AuthLoading) {
           SnackBarCustom.loading(context, content: "Cerrando sesión...");
         }
 
@@ -68,7 +68,7 @@ class _SettingsPageState extends State<SettingsPage> {
           );
         }
 
-        if (state is AuthErrorState) {
+        if (state is AuthFailure) {
           SnackBarCustom.error(
             context,
             content:
@@ -77,7 +77,7 @@ class _SettingsPageState extends State<SettingsPage> {
         }
       },
       builder: (context, state) {
-        final bool isLoading = state is AuthLoadingState;
+        final bool isLoading = state is AuthLoading;
         final User? user = (state is AuthAuthenticated) ? state.user : null;
 
         return Scaffold(

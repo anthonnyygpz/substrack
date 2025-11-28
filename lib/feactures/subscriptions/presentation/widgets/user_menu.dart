@@ -16,7 +16,7 @@ class _UserMenuState extends State<UserMenu> {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
-        final bool isLoading = state is AuthLoadingState;
+        final bool isLoading = state is AuthLoading;
         final User? user = (state is AuthAuthenticated) ? state.user : null;
 
         return Row(
