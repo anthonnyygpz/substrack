@@ -44,7 +44,7 @@ class AppRouter {
       final isPublicRoute = isGoingToLogin || isGoingToRegister;
 
       // CASO A: Usuario NO autenticado (o estado inicial)
-      if (authState is AuthInitialState || authState is AuthUnauthenticated) {
+      if (authState is AuthInitial || authState is AuthUnauthenticated) {
         // Si no está logueado y NO va a una ruta pública, mandarlo al login.
         // Si YA está yendo a login o register, retornar null (dejarlo pasar).
         return isPublicRoute ? null : '/login';
