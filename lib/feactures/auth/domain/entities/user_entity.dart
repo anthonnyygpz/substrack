@@ -9,3 +9,11 @@ class UserEntity {
     required this.password,
   });
 }
+
+class UpdateUserEntity {
+  final String? username;
+  final String? photoUrl;
+  final String? password;
+
+  UpdateUserEntity({this.username, this.password, this.photoUrl});
+}

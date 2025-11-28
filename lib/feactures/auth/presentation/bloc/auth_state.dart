@@ -2,14 +2,14 @@ part of 'auth_bloc.dart';
 
 abstract class AuthState {}
 
-class AuthInitialState extends AuthState {}
+class AuthInitial extends AuthState {}
 
-class AuthLoadingState extends AuthState {}
+class AuthLoading extends AuthState {}
 
-class AuthErrorState extends AuthState {
+class AuthFailure extends AuthState {
   final String? message;
 
-  AuthErrorState({required this.message});
+  AuthFailure({required this.message});
 }
 
 class AuthUnauthenticated extends AuthState {}
