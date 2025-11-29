@@ -2,13 +2,20 @@ import 'package:flutter/material.dart';
 
 class SnackBarCustom {
   static void loading(BuildContext context, {String content = "Cargando..."}) {
+    ColorScheme colorscheme = Theme.of(context).colorScheme;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        // duration: const Duration(days: 365),
+        backgroundColor: colorscheme.surfaceContainer,
         content: Row(
           spacing: 10,
-          children: [CircularProgressIndicator.adaptive(), Text(content)],
+          children: [
+            Transform.scale(
+              scale: 0.8,
+              child: CircularProgressIndicator.adaptive(),
+            ),
+            Text(content, style: TextStyle(color: Colors.white)),
+          ],
         ),
         dismissDirection: DismissDirection.none,
       ),

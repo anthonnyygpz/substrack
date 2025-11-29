@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:substrack/feactures/settings/presentation/pages/settings_page.dart';
-import 'package:substrack/feactures/subscriptions/presentation/pages/add_page.dart';
+import 'package:substrack/feactures/subscriptions/presentation/pages/add_or_edit_page.dart';
 import 'package:substrack/feactures/subscriptions/presentation/pages/subscription_list_page.dart';
 
 class TabNavigation extends StatefulWidget {
