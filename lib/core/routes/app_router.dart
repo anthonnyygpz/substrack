@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:substrack/feactures/auth/presentation/bloc/auth_bloc.dart';
 import 'package:substrack/feactures/auth/presentation/pages/login_page.dart';
 import 'package:substrack/feactures/auth/presentation/pages/register_page.dart';
-import 'package:substrack/feactures/subscriptions/presentation/pages/add_page.dart';
+import 'package:substrack/feactures/subscriptions/presentation/pages/add_or_edit_page.dart';
 import 'package:substrack/tabs_navigation.dart';
 
 class AppRouter {
