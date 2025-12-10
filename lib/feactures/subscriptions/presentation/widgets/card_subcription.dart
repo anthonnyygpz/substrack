@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:substrack/core/utils/price_per_unit.dart';
+import 'package:substrack/core/utils/text_to_color.dart';
 import 'package:substrack/core/widgets/icon_subscription.dart';
 import 'package:substrack/feactures/subscriptions/data/models/subscription_model.dart';
 import 'package:substrack/feactures/subscriptions/presentation/pages/details_sub_page.dart';
@@ -54,12 +55,14 @@ class _CardSubcriptionState extends State<CardSubcription> {
   Widget build(BuildContext context) {
     ColorScheme colorscheme = Theme.of(context).colorScheme;
     return GestureDetector(
-      onTap: () => pushScreen(
-        context,
-        screen: DetailsSubPage(sub: widget.sub),
-        withNavBar: false,
-        pageTransitionAnimation: PageTransitionAnimation.slideUp,
-      ),
+      onTap: () {
+        pushScreen(
+          context,
+          screen: DetailsSubPage(sub: widget.sub),
+          withNavBar: false,
+          pageTransitionAnimation: PageTransitionAnimation.cupertino,
+        );
+      },
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         onExit: (_) => setState(() {
@@ -127,7 +130,7 @@ class _CardSubcriptionState extends State<CardSubcription> {
                   child: LinearProgressIndicator(
                     value: progress,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      Color(int.parse("0xFF${widget.sub.colorMembership}")),
+                      textToColor(widget.sub.colorMembership),
                     ),
                   ),
                 ),
