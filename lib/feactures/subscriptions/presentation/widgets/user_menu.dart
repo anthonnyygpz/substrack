@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:substrack/core/widgets/user_profile_card.dart';
 import 'package:substrack/feactures/auth/presentation/bloc/auth_bloc.dart';
+import 'package:substrack/feactures/notifications/presentation/pages/notificaction_page.dart';
 
 class UserMenu extends StatefulWidget {
   const UserMenu({super.key});
@@ -26,10 +28,11 @@ class _UserMenuState extends State<UserMenu> {
               child: UserProfileCard(user: user, isLoading: isLoading),
             ),
 
-            IconButton(
-              onPressed: () {},
-              icon: Badge(label: Text('1'), child: Icon(Icons.notifications)),
-            ),
+            // IconButton(
+            //   onPressed: () =>
+            //       pushScreen(context, screen: const NotificactionPage()),
+            //   icon: Badge(label: Text('1'), child: Icon(Icons.notifications)),
+            // ),
           ],
         );
       },

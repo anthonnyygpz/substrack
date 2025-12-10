@@ -49,6 +49,11 @@ dependencies:
   go_router: ^16.3.0
   shimmer_animation: ^2.2.2
   currency_textfield: ^5.0.0+1
+  flutter_local_notifications: ^19.5.0
+  firebase_messaging: ^16.0.4
+  animate_do: ^4.2.0
+  flutter_slidable: ^4.0.3
+  animations: ^2.1.1
 
 dev_dependencies:
   flutter_test:

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:substrack/config/app_config.dart';
 import 'package:substrack/config/firebase_db.dart';
+import 'package:substrack/core/services/push_notification_service.dart';
 import 'package:substrack/core/routes/app_router.dart';
 import 'package:substrack/core/theme/theme_dark.dart';
 import 'package:intl/intl_standalone.dart';
@@ -11,6 +12,8 @@ import 'package:substrack/feactures/auth/presentation/bloc/auth_bloc.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await firebaseDB();
+
+  await PushNotificationService.initialize();
 
   await initializeDateFormatting("es_ES", null);
 
@@ -34,6 +37,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     final authBloc = context.read<AuthBloc>();
     _appRouter = AppRouter(authBloc);
+    PushNotificationService.checkInitialMessage();
   }
 
   @override
@@ -43,11 +47,8 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(colorScheme: themeDark, useMaterial3: true),
       builder: (context, child) {
-        return BlocConsumer<AuthBloc, AuthState>(
-          listener: (context, state) {},
-          builder: (context, state) {
-            return child!;
-          },
+        return BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) => child!,
         );
       },
     );
