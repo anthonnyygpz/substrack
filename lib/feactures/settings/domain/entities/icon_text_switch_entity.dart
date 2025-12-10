@@ -1,18 +1,14 @@
 import 'package:flutter/cupertino.dart';
 
 class IconTextEntity {
-  final IconData icon;
-  final String text;
-  final Color? textColor;
-  final Color? iconColor;
+  final Icon icon;
+  final Widget text;
   final Color? bgIconColor;
-  final void Function()? onTap;
+  final VoidCallback? onTap;
 
   IconTextEntity({
     required this.icon,
     required this.text,
-    this.textColor,
-    this.iconColor,
     this.bgIconColor,
     required this.onTap,
   });

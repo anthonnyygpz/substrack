@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -74,14 +75,21 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 child: Column(
                   children: [
-                    Image.asset("assets/subtrackLogo.png"),
+                    FadeInUp(
+                      duration: const Duration(milliseconds: 300),
+                      child: Image.asset("assets/subtrackLogo.png"),
+                    ),
 
-                    const Text(
-                      "SubTrack: \n Gestión de suscripciones",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w600,
+                    FadeInUp(
+                      delay: const Duration(milliseconds: 200),
+                      duration: const Duration(milliseconds: 300),
+                      child: const Text(
+                        "SubsTrack: \n Gestión de suscripciones",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
 
@@ -93,29 +101,41 @@ class _LoginPageState extends State<LoginPage> {
                         child: Column(
                           spacing: 15,
                           children: [
-                            TextFormFieldCustom(
-                              controller: emailController,
-                              enabled: !isLoading,
-                              autofillHints: [AutofillHints.email],
-                              keyboardType: TextInputType.emailAddress,
-                              validator: emailValidator,
-                              label: const Text('Correo electronico'),
-                              hintText: "ejemplo@gmail.com",
+                            FadeInUp(
+                              delay: const Duration(milliseconds: 400),
+                              duration: const Duration(milliseconds: 300),
+                              child: TextFormFieldCustom(
+                                controller: emailController,
+                                enabled: !isLoading,
+                                autofillHints: [AutofillHints.email],
+                                keyboardType: TextInputType.emailAddress,
+                                validator: emailValidator,
+                                label: const Text('Correo electronico'),
+                                hintText: "ejemplo@gmail.com",
+                              ),
                             ),
-                            TextFormFieldCustom(
-                              controller: passwordController,
-                              autofillHints: [AutofillHints.password],
-                              enabled: !isLoading,
-                              passwordButton: true,
-                              keyboardType: TextInputType.visiblePassword,
-                              validator: passwordValidator,
-                              label: const Text('Contraseña'),
-                              hintText: "••••••••",
+                            FadeInUp(
+                              delay: const Duration(milliseconds: 600),
+                              duration: const Duration(milliseconds: 300),
+                              child: TextFormFieldCustom(
+                                controller: passwordController,
+                                autofillHints: [AutofillHints.password],
+                                enabled: !isLoading,
+                                passwordButton: true,
+                                keyboardType: TextInputType.visiblePassword,
+                                validator: passwordValidator,
+                                label: const Text('Contraseña'),
+                                hintText: "••••••••",
+                              ),
                             ),
-                            ButtomCustom(
-                              onPressed: onLogin,
-                              isLoading: isLoading,
-                              text: 'Iniciar Sesión',
+                            FadeInUp(
+                              delay: const Duration(milliseconds: 800),
+                              duration: const Duration(milliseconds: 300),
+                              child: ButtomCustom(
+                                onPressed: onLogin,
+                                isLoading: isLoading,
+                                text: 'Iniciar Sesión',
+                              ),
                             ),
                           ],
                         ),
@@ -127,23 +147,27 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           persistentFooterButtons: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("¿No tienes cuenta?"),
-                TextButtomCustom(
-                  loading: isLoading,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => const RegisterPage(),
-                      ),
-                    );
-                  },
-                  text: const Text('Registrarse'),
-                ),
-              ],
+            FadeInUp(
+              delay: const Duration(milliseconds: 1000),
+              duration: const Duration(milliseconds: 300),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("¿No tienes cuenta?"),
+                  TextButtomCustom(
+                    loading: isLoading,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => const RegisterPage(),
+                        ),
+                      );
+                    },
+                    text: const Text('Registrarse'),
+                  ),
+                ],
+              ),
             ),
           ],
         );

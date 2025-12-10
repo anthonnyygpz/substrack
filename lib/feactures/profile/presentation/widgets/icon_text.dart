@@ -1,85 +1,88 @@
 import 'package:flutter/material.dart';
 
-class IconText extends StatefulWidget {
-  final IconData icon;
+class IconTextButton extends StatefulWidget {
+  final Icon icon;
   final Color? bgIconColor;
-  final Color? iconColor;
-  final String text;
+  final Widget text;
   final Color? textColor;
-  final void Function()? onTap;
-  final bool? isLoading;
+  final VoidCallback? onTap;
+  final bool isLoading;
+  final MainAxisSize mainAxisSize;
 
-  const IconText({
+  const IconTextButton({
     super.key,
     required this.icon,
     this.bgIconColor,
-    this.iconColor,
     required this.text,
     this.textColor,
     required this.onTap,
     this.isLoading = false,
+    this.mainAxisSize = MainAxisSize.max,
   });
 
   @override
-  State<IconText> createState() => _IconTextState();
+  State<IconTextButton> createState() => _IconTextButtonState();
 }
 
-class _IconTextState extends State<IconText> {
+class _IconTextButtonState extends State<IconTextButton> {
   bool isPressed = false;
 
   @override
   Widget build(BuildContext context) {
     ColorScheme colorscheme = Theme.of(context).colorScheme;
 
-    return InkWell(
-      borderRadius: BorderRadius.circular(10),
-      onTap: widget.isLoading! ? null : widget.onTap,
-      hoverColor: colorscheme.surfaceContainer.withValues(alpha: 0.5),
-      splashColor: colorscheme.surfaceContainer.withValues(alpha: 0.7),
-      highlightColor: colorscheme.surfaceContainer.withValues(alpha: 0.3),
-      onTapDown: (_) {
-        setState(() {
-          isPressed = true;
-        });
-      },
-      onTapUp: (_) {
-        setState(() {
-          isPressed = false;
-        });
-      },
-      onTapCancel: () {
-        setState(() {
-          isPressed = false;
-        });
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              spacing: 10,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color:
-                        widget.bgIconColor ??
-                        colorscheme.surfaceContainerHighest,
-                  ),
-                  padding: const EdgeInsets.all(6.0),
-                  child: Icon(widget.icon, color: widget.iconColor, size: 20),
+    final bool isInteractive = widget.onTap != null && !widget.isLoading;
+
+    return Opacity(
+      opacity: isInteractive ? 1.0 : 0.5,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10),
+        onTap: isInteractive ? widget.onTap : null,
+        hoverColor: colorscheme.surfaceContainer.withValues(alpha: 0.5),
+        splashColor: colorscheme.surfaceContainer.withValues(alpha: 0.7),
+        highlightColor: colorscheme.surfaceContainer.withValues(alpha: 0.3),
+        onTapDown: isInteractive
+            ? (_) => setState(() {
+                isPressed = true;
+              })
+            : null,
+        onTapUp: isInteractive
+            ? (_) => setState(() {
+                isPressed = false;
+              })
+            : null,
+        onTapCancel: isInteractive
+            ? () => setState(() {
+                isPressed = false;
+              })
+            : null,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Row(
+            spacing: 10,
+            mainAxisSize: widget.mainAxisSize,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color:
+                      widget.bgIconColor ?? colorscheme.surfaceContainerHighest,
                 ),
-                Text(
-                  widget.text,
-                  style: TextStyle(
-                    color: widget.textColor,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ],
+                padding: const EdgeInsets.all(6.0),
+                child: widget.isLoading
+                    ? SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: widget.bgIconColor,
+                        ),
+                      )
+                    : widget.icon,
+              ),
+              widget.text,
+            ],
+          ),
         ),
       ),
     );

@@ -22,31 +22,27 @@ class _SettingsPageState extends State<SettingsPage> {
 
   List<IconTextEntity> get _settingsOptions => [
     IconTextEntity(
-      icon: Icons.question_answer,
-      text: 'Contactar con soporte',
+      icon: Icon(Icons.question_answer),
+      text: Text('Contactar con soporte'),
+      onTap: () => SnackBarCustom.loading(context),
+    ),
+    IconTextEntity(
+      icon: Icon(Icons.newspaper),
+      text: Text('Términos y condiciones'),
       onTap: null,
     ),
     IconTextEntity(
-      icon: Icons.messenger,
-      text: 'Contactar con soporte',
-      onTap: null,
-    ),
-    IconTextEntity(
-      icon: Icons.newspaper,
-      text: 'Términos y condiciones',
-      onTap: null,
-    ),
-    IconTextEntity(
-      icon: Icons.shield,
-      text: 'Política de privacidad',
+      icon: Icon(Icons.shield),
+      text: Text('Política de privacidad'),
       onTap: null,
     ),
     IconTextEntity(
       bgIconColor: AppColors.colorRedLight,
-      textColor: AppColors.colorRedDark,
-      iconColor: AppColors.colorRedDark,
-      text: 'Cerrar sesión',
-      icon: Icons.exit_to_app,
+      text: Text(
+        'Cerrar sesión',
+        style: TextStyle(color: AppColors.colorRedDark),
+      ),
+      icon: Icon(Icons.exit_to_app, color: AppColors.colorRedDark),
       onTap: () => onLogout(),
     ),
   ];
@@ -122,12 +118,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
 
                       ..._settingsOptions.map(
-                        (data) => IconText(
+                        (data) => IconTextButton(
                           icon: data.icon,
                           text: data.text,
-                          textColor: data.textColor,
                           bgIconColor: data.bgIconColor,
-                          iconColor: data.iconColor,
                           onTap: data.onTap,
                         ),
                       ),
