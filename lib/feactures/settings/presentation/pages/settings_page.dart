@@ -24,7 +24,7 @@ class _SettingsPageState extends State<SettingsPage> {
     IconTextEntity(
       icon: Icon(Icons.question_answer),
       text: Text('Contactar con soporte'),
-      onTap: () => SnackBarCustom.loading(context),
+      onTap: null,
     ),
     IconTextEntity(
       icon: Icon(Icons.newspaper),
