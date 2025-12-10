@@ -10,13 +10,14 @@ part 'subcription_state.dart';
 
 class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   final ISubscriptionRepository _subsRepository;
+  List<SubscriptionModel> allSubscriptions = [];
 
   SubscriptionBloc({required ISubscriptionRepository subRepository})
     : _subsRepository = subRepository,
       super(SubscriptionInitial()) {
     on<LoadedSubscriptions>(_onLoadedSubscriptions);
     on<AddedSubscription>(_onAddedSubscription);
-    on<SearchSubscriptions>(_searchSubscription);
+    on<SearchSubscriptions>(_onSearchSubscriptions);
     on<DeletedSubscription>(_onDeletedSubscription);
     on<FetchedByIdSubscription>(_onFetchedByIdSubscription);
     on<UpdatedSubscription>(_onUpdatedSubscription);
@@ -86,6 +87,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     emit(SubscriptionLoadingState());
     try {
       final subscriptions = await _subsRepository.fetchSubscriptions();
+      allSubscriptions = subscriptions;
       emit(SubscriptionLoadedState(subscriptions: subscriptions));
     } catch (e) {
       final friendlyMessage = GlobalErrorTranslator.translate(e);
@@ -115,16 +117,28 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
     }
   }
 
-  void _searchSubscription(
+  void _onSearchSubscriptions(
     SearchSubscriptions event,
     Emitter<SubscriptionState> emit,
   ) async {
     emit(SubscriptionLoadingState());
+
     try {
-      final querySearch = event.querySearch?.toLowerCase();
-      if (querySearch == null) {
+      final allSubscriptions = await _subsRepository.fetchSubscriptions();
+
+      final query = event.querySearch?.toLowerCase() ?? '';
+
+      if (query.isEmpty) {
+        emit(SubscriptionLoadedState(subscriptions: allSubscriptions));
         return;
       }
+
+      final filteredList = allSubscriptions.where((subscription) {
+        final title = subscription.serviceName.toLowerCase();
+        return title.contains(query);
+      }).toList();
+
+      emit(SubscriptionLoadedState(subscriptions: filteredList));
     } catch (e) {
       final friendlyMessage = GlobalErrorTranslator.translate(e);
       emit(SubscriptionErrorState(message: friendlyMessage));

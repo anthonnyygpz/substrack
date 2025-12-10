@@ -32,7 +32,7 @@ class _TabNavigationState extends State<TabNavigation> {
     return Scaffold(
       body: PersistentTabView(
         controller: controller,
-        gestureNavigationEnabled: true,
+        // gestureNavigationEnabled: true,
         tabs: [
           PersistentTabConfig(
             screen: const SubcriptionListPage(),

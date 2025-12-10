@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:go_router/go_router.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
-import 'package:substrack/core/state_handlers/subscription_state_manager.dart';
+import 'package:substrack/core/widgets/snack_bar_custom.dart';
 import 'package:substrack/feactures/auth/presentation/bloc/auth_bloc.dart';
 import 'package:substrack/feactures/subscriptions/data/models/subscription_model.dart';
 import 'package:substrack/feactures/subscriptions/presentation/bloc/subcription_bloc.dart';
@@ -33,12 +35,41 @@ class _SubcriptionListPageState extends State<SubcriptionListPage> {
     context.read<AuthBloc>().add(AppStarted());
   }
 
+  void showDialogDeleteItem(BuildContext context, String index, String name) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('¿Deseas borrar esta suscripción: $name?'),
+          actions: [
+            TextButton(onPressed: () => context.pop(), child: Text('Cancelar')),
+            TextButton(
+              onPressed: () {
+                context.read<SubscriptionBloc>().add(
+                  DeletedSubscription(id: index),
+                );
+
+                context.pop();
+              },
+              child: Text('Aceptar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     ColorScheme colorscheme = Theme.of(context).colorScheme;
     return Scaffold(
       body: SafeArea(
-        child: SubscriptionStateManager(
+        child: BlocConsumer<SubscriptionBloc, SubscriptionState>(
+          listener: (contes, state) {
+            if (state is SubscriptionErrorState) {
+              SnackBarCustom.error(context, content: state.message.toString());
+            }
+          },
           builder: (context, state) {
             bool isLoading = state is SubscriptionLoadingState;
 
@@ -57,40 +88,38 @@ class _SubcriptionListPageState extends State<SubcriptionListPage> {
                     UserMenu(),
                     SizedBox(height: 20),
 
-                    GestureDetector(
-                      onTap: () {
-                        pushScreen(
+                    InkWell(
+                      onTap: () async {
+                        await pushScreen(
                           context,
                           screen: const SearchSubscriptionPage(),
                         );
+                        if (!context.mounted) return;
+                        context.read<SubscriptionBloc>().add(
+                          LoadedSubscriptions(),
+                        );
                       },
-                      child: MouseRegion(
-                        cursor: SystemMouseCursors.click,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
-                          ),
-                          decoration: BoxDecoration(
-                            color: colorscheme.surfaceContainer,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.search,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: colorscheme.surfaceContainer,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.search, color: colorscheme.onSecondary),
+                            SizedBox(width: 10),
+                            Text(
+                              'Buscar...',
+                              style: TextStyle(
                                 color: colorscheme.onSecondary,
+                                fontSize: 16,
                               ),
-                              SizedBox(width: 10),
-                              Text(
-                                'Buscar...',
-                                style: TextStyle(
-                                  color: colorscheme.onSecondary,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -106,7 +135,7 @@ class _SubcriptionListPageState extends State<SubcriptionListPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Text(
-                        "Activos(${subscriptions.isEmpty ? subscriptions.length : 0})",
+                        "Activos(${subscriptions.length})",
                         style: TextStyle(fontSize: 14),
                       ),
                     ),
@@ -116,7 +145,30 @@ class _SubcriptionListPageState extends State<SubcriptionListPage> {
                           itemCount: subscriptions.length,
                           itemBuilder: (BuildContext context, int index) {
                             final SubscriptionModel item = subscriptions[index];
-                            return CardSubcription(sub: item);
+                            return Slidable(
+                              key: Key(item.id!),
+                              endActionPane: ActionPane(
+                                motion: const ScrollMotion(),
+                                extentRatio: 0.25,
+                                children: [
+                                  SlidableAction(
+                                    onPressed: (context) =>
+                                        showDialogDeleteItem(
+                                          context,
+                                          item.id!,
+                                          item.serviceName,
+                                        ),
+                                    backgroundColor: Colors.red,
+                                    foregroundColor: Colors.white,
+                                    icon: Icons.delete,
+                                    label: 'Borrar',
+                                    // Puedes redondear las esquinas si tu card las tiene
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ],
+                              ),
+                              child: CardSubcription(sub: item),
+                            );
                           },
                         ),
                       )
