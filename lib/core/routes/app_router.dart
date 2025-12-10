@@ -6,6 +6,7 @@ import 'package:substrack/feactures/auth/presentation/bloc/auth_bloc.dart';
 import 'package:substrack/feactures/auth/presentation/pages/login_page.dart';
 import 'package:substrack/feactures/auth/presentation/pages/register_page.dart';
 import 'package:substrack/feactures/subscriptions/presentation/pages/add_or_edit_page.dart';
+import 'package:substrack/splash_page.dart';
 import 'package:substrack/tabs_navigation.dart';
 
 class AppRouter {
@@ -13,10 +14,11 @@ class AppRouter {
 
   late final GoRouter router = GoRouter(
     refreshListenable: GoRouteRefreshStream(authBloc.stream),
-    initialLocation: '/',
+    initialLocation: '/splash',
     debugLogDiagnostics: true,
     routes: [
       GoRoute(path: '/', builder: (context, state) => const TabNavigation()),
+      GoRoute(path: '/splash', builder: (context, state) => const SplashPage()),
       GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
       GoRoute(
         path: '/register',
@@ -41,7 +43,9 @@ class AppRouter {
 
       final isGoingToLogin = state.matchedLocation == '/login';
       final isGoingToRegister = state.matchedLocation == '/register';
-      final isPublicRoute = isGoingToLogin || isGoingToRegister;
+      final isGoingToSplash = state.matchedLocation == '/splash';
+      final isPublicRoute =
+          isGoingToLogin || isGoingToRegister || isGoingToSplash;
 
       // CASO A: Usuario NO autenticado (o estado inicial)
       if (authState is AuthInitial || authState is AuthUnauthenticated) {
